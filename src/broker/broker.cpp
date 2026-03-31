@@ -126,7 +126,7 @@ void Broker::ack(const std::string& job_id) {
 }
 
 void Broker::retry(const std::string& job_id) {
-    auto& job = all_jobs_[job_id];
+    auto& job = all_jobs_[job_id]; // add serious checks to this codebase for production use
     job.retry_count++;
 
     WALEvent event{
@@ -138,6 +138,20 @@ void Broker::retry(const std::string& job_id) {
 
     wal_->append(event);
     applyEvent(event);
+}
+
+
+void Broker::moveToDLQ(const std::string& job_id) {
+    WALEvent event{
+        WALEventType::MOVE_TO_DLQ,
+        job_id,
+        "",
+        0
+    };
+
+    wal_->append(event);
+    applyEvent(event);
+    std::cout << "Moved job " << job_id << " to DLQ\n";
 }
 
 void Broker::checkTimeouts() {

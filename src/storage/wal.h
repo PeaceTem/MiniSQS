@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <optional>
+// #include <fstream>
 #include "../common/job.h"
 
 enum class WALEventType {
@@ -28,6 +29,7 @@ public:
 
 private:
     std::string file_path_;
+    // std::ofstream file_;
 
     std::string serialize(const WALEvent& event);
     std::optional<WALEvent> deserialize(const std::string& line);
